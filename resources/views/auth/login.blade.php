@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
+@section('title', 'AduMass | Masuk')
+
 @section('content')
+<div style="width: 100%; height: 20vh; display: flex; justify-content: center; align-items: center;">
+    <img src="/images/adumas.png" alt="" style="width: 200px; margin-bottom: 0;">
+</div>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">

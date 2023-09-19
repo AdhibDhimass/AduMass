@@ -2,55 +2,100 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+<link rel="stylesheet" href="path/ke/style.css">
 @endsection
 
-@section('title', 'PEKAT - Pengaduan Masyarakat')
+@section('title', 'AduMass - Aduan Masyarakat')
 
 @section('content')
 {{-- Section Header --}}
-<section class="header">
+<section class="header" style="height: 600px">
     <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
         <div class="container">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <h4 class="semi-bold mb-0 text-white">PEKAT</h4>
-                    <p class="italic mt-0 text-white">Pengaduan Masyarakat</p>
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    <img src="/images/adumas.png" alt="" style="width: 120px">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    @if(Auth::guard('masyarakat')->check())
+                    @if(auth()->user())
                     <ul class="navbar-nav text-center ml-auto">
+                    @auth
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'petugas')
+                    <li class="nav-item">
+                        <a class="nav-link ml-3 text-white" href="/dashboard">Dashboard</a>
+                    </li>
+                @endif
+
+                    @endauth
                         <li class="nav-item">
                             <a class="nav-link ml-3 text-white" href="{{ route('pekat.laporan') }}">Laporan</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link ml-3 text-white" href="{{ route('pekat.logout') }}"
-                                style="text-decoration: underline">{{ Auth::guard('masyarakat')->user()->nama }}</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ auth()->user()->nama }}
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <div class="dropdown-divider"></div>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
                         </li>
                     </ul>
                     @else
-                    <ul class="navbar-nav text-center ml-auto">
-                        <li class="nav-item">
-                            <button class="btn text-white" type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#loginModal">Masuk</button>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('pekat.formRegister') }}" class="btn btn-outline-purple">Daftar</a>
-                        </li>
-                    </ul>
+                        <!-- Tampilkan konten untuk pengguna yang belum login -->
+                        <ul class="navbar-nav text-center ml-auto">
+                            <li class="nav-item">
+                                <a class="btn text-white" class="btn btn-primary"
+                                    href="/login">Masuk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/register" class="btn btn-outline-purple">Daftar</a>
+                            </li>
+                        </ul>
                     @endauth
+
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="text-center">
-        <h2 class="medium text-white mt-3">Layanan Pengaduan Masyarakat</h2>
+    {{-- <div class="text-center">
+        <h2 class="medium text-white mt-3">Layanan Aduan Masyarakat</h2>
         <p class="italic text-white mb-5">Sampaikan laporan Anda langsung kepada yang pemerintah berwenang</p>
-    </div>
+    </div> --}}
+
+    <div class="container p-5">
+      <div class="row">
+          <div class="col-lg-8">
+              <div class="text-container" style="margin-bottom: -70px;">
+                  <h1 class="h1-large text-white">Layanan Aduan Masyarakat</h1>
+                  <p class="p-large text-white">
+                      Sampaikan laporan Anda langsung kepada <br>
+                      pemerintah yang berwenang
+                  </p>
+                  <a href="/laporann" class="btn btn-primary btn-lg" style="border-radius: 50px;">Laporkan</a>
+              </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="image-container d-flex justify-content-center align-items-center" style="height: 70%;">
+                <img class="img-fluid" src="/images/tangan.png" alt="alternative">
+            </div>
+        </div>
+
+      </div>
+  </div>
+
+
 
     <div class="wave wave1"></div>
     <div class="wave wave2"></div>
@@ -58,7 +103,7 @@
     <div class="wave wave4"></div>
 </section>
 {{-- Section Card Pengaduan --}}
-<div class="row justify-content-center">
+{{-- <div class="row justify-content-center">
     <div class="col-lg-6 col-10 col">
         <div class="content shadow">
 
@@ -86,31 +131,116 @@
             </form>
         </div>
     </div>
-</div>
+</div> --}}
+
+ <h1 class="text-center"></h1>
+<div class="container py-5">
+    <div class="row">
+      <!-- Column -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <!-- Article -->
+        <article class="card shadow-lg bg-secondary text-white">
+          <img alt="Tulis"
+            class="card-img-top mx-auto my-4 img-fluid "
+            style="min-width: 150px; max-width: 150px; "
+            src="/images/list (1).png"  />
+          <div class="card-body text-center">
+            <h1 class="card-title h4 font-weight-bold">1. Tulis Laporan</h1>
+            <p class="card-text py-2">
+              Laporkan keluhan atau aspirasi Anda dengan jelas dan lengkap.
+            </p>
+          </div>
+        </article>
+        <!-- END Article -->
+      </div>
+      <!-- END Column -->
+
+      <!-- Repeat the above structure for other columns (2. Proses Verifikasi, 3. Tindak Lanjut, 4. Selesai) -->
+      <!-- Column -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <!-- Article -->
+        <article class="card shadow-lg bg-secondary text-white">
+          <img alt="Proses"
+            class="card-img-top mx-auto my-4 img-fluid"
+            style="min-width: 150px; max-width: 150px;"
+            src="/images/refresh.png" />
+          <div class="card-body text-center">
+            <h1 class="card-title h4 font-weight-bold">2. Proses Verifikasi</h1>
+            <p class="card-text py-2">
+              Laporan Anda akan diverifikasi.
+            </p>
+          </div>
+        </article>
+        <!-- END Article -->
+      </div>
+      <!-- END Column -->
+
+      <!-- Column -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <!-- Article -->
+        <article class="card shadow-lg bg-secondary text-white">
+          <img alt="Ditindak"
+            class="card-img-top mx-auto my-4 img-fluid"
+            style="min-width: 150px; max-width: 150px;"
+            src="/images/process (1).png" />
+          <div class="card-body text-center">
+            <h1 class="card-title h4 font-weight-bold">3. Tindak Lanjut</h1>
+            <p class="card-text py-2">
+              Instansi akan menindaklanjuti dan membalas laporan Anda.
+            </p>
+          </div>
+        </article>
+        <!-- END Article -->
+      </div>
+      <!-- END Column -->
+
+      <!-- Column -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <!-- Article -->
+        <article class="card shadow-lg bg-secondary text-white">
+          <img alt="Selesai"
+            class="card-img-top mx-auto my-4 img-fluid"
+            style="min-width: 150px; max-width: 150px;"
+            src="/images/checked.png" />
+          <div class="card-body text-center">
+            <h1 class="card-title h4 font-weight-bold">4. Selesai</h1>
+            <p class="card-text py-2">
+              Laporan Anda akan terus ditindaklanjuti hingga terselesaikan.
+            </p>
+          </div>
+        </article>
+        <!-- END Article -->
+      </div>
+      <!-- END Column -->
+    </div>
+  </div>
+
+
 {{-- Section Hitung Pengaduan --}}
 <div class="pengaduan mt-5">
     <div class="bg-purple">
         <div class="text-center">
             <h5 class="medium text-white mt-3">JUMLAH LAPORAN SEKARANG</h5>
-            <h2 class="medium text-white">10</h2>
+            <h2 class="medium text-white">{{ $jumlahLaporan }}</h2>
         </div>
     </div>
 </div>
+
 {{-- Footer --}}
 <div class="mt-5">
     <hr>
     <div class="text-center">
-        <p class="italic text-secondary">© 2021 Ihsanfrr • All rights reserved</p>
+        <p class="italic text-secondary">© adhibdhimas • All rights reserved</p>
     </div>
 </div>
 {{-- Modal --}}
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{{-- <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <h3 class="mt-3">Masuk terlebih dahulu</h3>
                 <p>Silahkan masuk menggunakan akun yang sudah didaftarkan.</p>
-                <form action="{{ route('pekat.login') }}" method="POST">
+                <form action="/login" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -130,14 +260,14 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 @endsection
 
 @section('js')
     @if (Session::has('pesan'))
     <script>
         $('#loginModal').modal('show');
-
     </script>
     @endif
+    <script src="https://kit.fontawesome.com/61bcac0926.js" crossorigin="anonymous"></script>
 @endsection

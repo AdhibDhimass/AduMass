@@ -3,52 +3,67 @@
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
 <link rel="stylesheet" href="{{ asset('css/laporan.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<link rel="stylesheet" href="path/to/lightbox.css">
+<style>
+    /* Gaya CSS untuk tombol "Kembali" */
+.lightbox-back-button {
+    background-color: #007bff; /* Warna latar belakang biru */
+    color: #fff; /* Warna teks putih */
+    padding: 5px 10px; /* Padding tombol */
+    border: none; /* Tanpa border */
+    cursor: pointer; /* Kursor berubah menjadi tangan saat mengarahkan ke tombol */
+    text-decoration: none; /* Hapus garis bawah default pada tautan */
+}
+
+/* Gaya CSS untuk mengubah tampilan tombol saat dihover */
+.lightbox-back-button:hover {
+    background-color: #0056b3; /* Warna latar belakang biru lebih gelap saat dihover */
+}
+
+</style>
+
 @endsection
 
-@section('title', 'PEKAT - Pengaduan Masyarakat')
+@section('title', 'Laporan | AduMass')
 
 @section('content')
+
 {{-- Section Header --}}
 <section class="header">
     <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
-        <div class="container">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ route('pekat.index') }}">
-                    <h4 class="semi-bold mb-0 text-white">PEKAT</h4>
-                    <p class="italic mt-0 text-white">Pengaduan Masyarakat</p>
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    @if(Auth::guard('masyarakat')->check())
-                    <ul class="navbar-nav text-center ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link ml-3 text-white" href="{{ route('pekat.laporan') }}">Laporan</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link ml-3 text-white" href="{{ route('pekat.logout') }}"
-                                style="text-decoration: underline">{{ Auth::guard('masyarakat')->user()->nama }}</a>
-                        </li>
-                    </ul>
-                    @else
-                    <ul class="navbar-nav text-center ml-auto">
-                        <li class="nav-item">
-                            <button class="btn text-white" type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#loginModal">Masuk</button>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('pekat.formRegister') }}" class="btn btn-outline-purple">Daftar</a>
-                        </li>
-                    </ul>
-                    @endauth
-                </div>
-            </div>
+        <!-- ... kode sebelumnya ... -->
+        <div class="collapse navbar-collapse p-2" id="navbarNav ">
+            @auth
+            @if(auth()->user()->role == 'masyarakat')
+            <ul class="navbar-nav text-center ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link ml-3 text-white" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ auth()->user()->nama }}
+                    </a>
+                    <!-- Dropdown - User Information -->
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+            @endif
+            @endauth
         </div>
     </nav>
-
+    <h2 class="text-center p-5 text-white">Laporakan AduanMu</h2>
 </section>
+
 {{-- Section Card --}}
 <div class="container">
     <div class="row justify-content-between">
@@ -66,6 +81,10 @@
                 <form action="{{ route('pekat.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
+                        <textarea name="judul" placeholder="Masukkan Judul Laporan" class="form-control"
+                            rows="4">{{ old('judul') }}</textarea>
+                    </div>
+                    <div class="form-group">
                         <textarea name="isi_laporan" placeholder="Masukkan Isi Laporan" class="form-control"
                             rows="4">{{ old('isi_laporan') }}</textarea>
                     </div>
@@ -81,8 +100,8 @@
                 <div>
                     <img src="{{ asset('images/user_default.svg') }}" alt="user profile" class="photo">
                     <div class="self-align">
-                        <h5><a style="color: #6a70fc" href="#">{{ Auth::guard('masyarakat')->user()->nama }}</a></h5>
-                        <p class="text-dark">{{ Auth::guard('masyarakat')->user()->username }}</p>
+                        <h5><a style="color: #000" href="#">{{  auth()->user()->nama  }}</a></h5>
+                        <p class="text-dark">{{auth()->user()->nama }}</p>
                     </div>
                     <div class="row text-center">
                         <div class="col">
@@ -109,51 +128,67 @@
         </div>
     </div>
 
-    <div class="row mt-5">
-        <div class="col-lg-8">
-            <a class="d-inline tab {{ $siapa != 'me' ? 'tab-active' : ''}} mr-4" href="{{ route('pekat.laporan') }}">
-                Semua
-            </a>
-            <a class="d-inline tab {{ $siapa == 'me' ? 'tab-active' : ''}}" href="{{ route('pekat.laporan', 'me') }}">
-                Laporan Saya
-            </a>
-            <hr>
-        </div>
+    <div class="col-lg-8 mt-5">
+        <a class="d-inline tab {{ $siapa != 'me' ? 'tab-active' : ''}}" href="{{ route('pekat.laporan') }}">
+            Semua
+        </a>
+        @if(auth()->user()->role == 'masyarakat')
+        <a class="d-inline tab {{ $siapa == 'me' ? 'tab-active' : ''}}" href="{{ route('pekat.laporan', 'me') }}">
+            Laporan Saya
+        </a>
+        @endif
+        <hr>
+    </div>
+
         @foreach ($pengaduan as $k => $v)
         <div class="col-lg-8">
             <div class="laporan-top">
                 <img src="{{ asset('images/user_default.svg') }}" alt="profile" class="profile">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>{{ $v->user->nama }}</p>
+                        <p class="font-bold">{{ $v->user ? $v->user->nama : 'User Tidak Ditemukan' }}</p>
                         @if ($v->status == '0')
-                        <p class="text-danger">Pending</p>
+                        <p class=" badge badge-danger text-white p-1">Pending</p>
                         @elseif($v->status == 'proses')
-                        <p class="text-warning">{{ ucwords($v->status) }}</p>
+                        <p class="badge badge-warning text-white p-1">{{ ucwords($v->status) }}</p>
                         @else
-                        <p class="text-success">{{ ucwords($v->status) }}</p>
+                        <p class="badge badge-success text-white p-1">{{ ucwords($v->status) }}</p>
                         @endif
                     </div>
                     <div>
-                        <p>{{ $v->tgl_pengaduan->format('d M, h:i') }}</p>
+                        <p>{{ $v->created_at->format('d M, h:i') }}</p>
                     </div>
                 </div>
             </div>
             <div class="laporan-mid">
                 <div class="judul-laporan">
-                    {{ $v->judul_laporan }}
+                    {{ $v->judul }}
                 </div>
                 <p>{{ $v->isi_laporan }}</p>
             </div>
             <div class="laporan-bottom">
-                @if ($v->foto != null)
-                <img src="{{ Storage::url($v->foto) }}" alt="{{ 'Gambar '.$v->judul_laporan }}" class="gambar-lampiran">
-                @endif
-                @if ($v->tanggapan != null)
-                <p class="mt-3 mb-1">{{ '*Tanggapan dari '. $v->tanggapan->petugas->nama_petugas }}</p>
-                <p class="light">{{ $v->tanggapan->tanggapan }}</p>
+                <div class="laporan-bottom">
+                    @if ($v->foto != null)
+                    <a href="{{ Storage::url($v->foto) }}" data-lightbox="gambar-laporan" data-title="{{ 'Gambar '.$v->judul }}">
+                        <img src="{{ Storage::url($v->foto) }}" alt="{{ 'Gambar '.$v->judul }}" class="gambar-lampiran" style="max-width: 100%; height: auto;">
+                        <button id="backButton" class="lightbox-back-button" style="display: none;">Kembali</button>
+                    </a>
+                    @endif
+                </div>
+
+
+                @php
+                $latestTanggapan = $v->tanggapan()->latest()->first(); // Mengambil tanggapan terbaru
+                @endphp
+
+                @if ($latestTanggapan)
+                <p class="mt-3 mb-1">{{ 'Ditanggapi oleh '. $latestTanggapan->user->nama}}</p>
+                <p class="light">{{ $latestTanggapan->tanggapan }}</p>
+                <p class="light">{{ 'Waktu Tanggapan: '. $latestTanggapan->created_at->format('d F Y, H:i:s') }}</p>
                 @endif
             </div>
+
+
             <hr>
         </div>
         @endforeach
@@ -163,7 +198,7 @@
 <div class="mt-5">
     <hr>
     <div class="text-center">
-        <p class="italic text-secondary">© 2021 Ihsanfrr • All rights reserved</p>
+        <p class="italic text-secondary">© adhibdhimas • All rights reserved</p>
     </div>
 </div>
 @endsection
@@ -172,7 +207,44 @@
 @if (Session::has('pesan'))
 <script>
     $('#loginModal').modal('show');
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script src="path/to/lightbox.js"></script>
+<script>
+// Fungsi untuk menampilkan lightbox
+function openLightbox(imageUrl) {
+    // Mendapatkan elemen lightbox dan tombol "Kembali"
+    var lightbox = document.getElementById('lightbox');
+    var backButton = document.getElementById('backButton');
+
+    // Mendapatkan elemen gambar lightbox
+    var lightboxImage = lightbox.querySelector('img');
+
+    // Mengatur URL gambar lightbox sesuai dengan imageUrl
+    lightboxImage.src = imageUrl;
+
+    // Menampilkan lightbox
+    lightbox.style.display = 'block';
+
+    // Menampilkan tombol "Kembali"
+    backButton.style.display = 'block';
+
+    // Mengatur tindakan saat gambar lightbox diklik
+    lightboxImage.addEventListener('click', function() {
+        // Mengarahkan ke halaman laporan ketika gambar lightbox diklik
+        window.location.href = "{{ route('pekat.laporan') }}";
+    });
+
+    // Mengatur tindakan saat tombol "Kembali" diklik
+    backButton.addEventListener('click', function() {
+        // Menyembunyikan lightbox dan tombol "Kembali" ketika tombol "Kembali" diklik
+        lightbox.style.display = 'none';
+        backButton.style.display = 'none';
+    });
+}
 
 </script>
+
+
 @endif
 @endsection

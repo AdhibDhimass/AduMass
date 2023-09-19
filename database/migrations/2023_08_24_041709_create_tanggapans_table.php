@@ -23,7 +23,6 @@ return new class extends Migration
             $table->foreign('pengaduan_id')->references('id')->on('pengaduans');
         });
     }
-
     /**
      * Reverse the migrations.
      */

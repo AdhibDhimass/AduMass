@@ -253,7 +253,8 @@
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pending }}</div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                {{-- <i class="fas fa-comments fa-2x text-gray-300"></i> --}}
+                                <i class="fa-solid fa-exclamation fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -292,7 +293,8 @@
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $selesai }}</div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                {{-- <i class="fas fa-comments fa-2x text-gray-300"></i> --}}
+                                <i class="fa-solid fa-check fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
